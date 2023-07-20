@@ -130,7 +130,7 @@ var _ Widget = &ImageWithRgbaWidget{}
 // display it in giu.
 type ImageWithRgbaWidget struct {
 	id   string
-	rgba image.Image
+	Rgba image.Image
 	img  *ImageWidget
 }
 
@@ -138,7 +138,7 @@ type ImageWithRgbaWidget struct {
 func ImageWithRgba(rgba image.Image) *ImageWithRgbaWidget {
 	return &ImageWithRgbaWidget{
 		id:   GenAutoID("ImageWithRgba"),
-		rgba: rgba,
+		Rgba: rgba,
 		img:  Image(nil),
 	}
 }
@@ -163,13 +163,17 @@ func (i *ImageWithRgbaWidget) OnClick(cb func()) *ImageWithRgbaWidget {
 
 // Build implements Widget interface.
 func (i *ImageWithRgbaWidget) Build() {
-	if i.rgba != nil {
+	if i.Rgba != nil {
 		var imgState *imageState
 		if imgState = GetState[imageState](Context, i.id); imgState == nil {
 			imgState = &imageState{}
 			SetState(Context, i.id, imgState)
 
-			NewTextureFromRgba(i.rgba, func(tex *Texture) {
+			NewTextureFromRgba(i.Rgba, func(tex *Texture) {
+				imgState.texture = tex
+			})
+		} else {
+			NewTextureFromRgba(i.Rgba, func(tex *Texture) {
 				imgState.texture = tex
 			})
 		}
